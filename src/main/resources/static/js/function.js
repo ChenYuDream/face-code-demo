@@ -3,13 +3,13 @@ var pageUtil = {
     renderPage: function (vmPage, jump, domId) {
         layui.laypage.render({
             elem: domId,    //div的ID
-            count: vmPage.totalRows,//总页数
-            curr: vmPage.currentPage || 1, //当前页
+            count: vmPage.total,//总页数
+            curr: vmPage.current || 1, //当前页
             skip: true,
             theme: '#009688',
             jump: function (obj, first) {//跳转页面时的回调,obj:配置项参数,first:是否为首次加载
                 if (!first) {
-                    vmPage.currentPage = obj.curr;
+                    vmPage.current = obj.curr;
                     jump();
                 }
             }
@@ -193,6 +193,42 @@ var ajaxUtil = {
         var currentIndex;
         $.ajax({
             type: 'post',
+            url: url,
+            data: dataStr,
+            dataType: "json",
+            timeout: 10000,
+            beforeSend: function () {
+                if (isLoading) {
+                    currentIndex = layerUtil.loading();
+                }
+            },
+            success: function (data) {
+                if (isLoading) {
+                    layerUtil.closeIndex(currentIndex);
+                }
+                if (data.code >= 0) {
+                    if (fn && typeof fn == "function") {
+                        fn(data);
+                    } else {
+                        return;
+                    }
+                } else {
+                    layerUtil.fail("操作失败");
+                }
+            }
+        });
+    },
+    /**
+     * get 只用处理code==0的情况
+     * @param url
+     * @param dataStr
+     * @param fn
+     * @param isLoading
+     */
+    get: function (url, dataStr, isLoading, fn) {
+        var currentIndex;
+        $.ajax({
+            type: 'get',
             url: url,
             data: dataStr,
             dataType: "json",

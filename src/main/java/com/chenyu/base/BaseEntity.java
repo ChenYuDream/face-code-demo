@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 公共的entity
@@ -25,15 +26,4 @@ public class BaseEntity implements Serializable {
     @TableId
     private String id;
 
-    /**
-     * 创建时间
-     */
-    @TableField(update = "now()", fill = FieldFill.UPDATE)
-    private LocalDateTime createTime;
-
-    /**
-     * 更新时间
-     */
-    @TableField(update = "now()", fill = FieldFill.UPDATE)
-    private LocalDateTime updateTime;
 }
